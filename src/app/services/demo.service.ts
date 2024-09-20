@@ -8,8 +8,8 @@ import { UserRole } from '../enums/user-role.enum';
   providedIn: 'root'
 })
 export class DemoService {
-  private apiUrl = ' http://localhost:3000/api/users';
-  // private apiUrl = 'assets/db.json';
+  // private apiUrl = ' http://localhost:3000/api/users';
+  private apiUrl = 'assets/db.json';
 
   // private httpOptions = {
   //   headers: new HttpHeaders({
@@ -53,14 +53,28 @@ export class DemoService {
   //   );
   // }
 
-  getUserByEmail(email: string): Observable<any> {
-    return this.getUsers().pipe(map((data: any) => {
-      console.log('sadsad',data);
-      
-      // data.users.find((user: any) => { user.email === email })
-    }));
-  }
+  // getUserByEmail(email: string): Observable<any> {
+  //   return this.getUsers().pipe(map((data: any) => {
+  //      return data.users.find((user: any) => { user.email === email })
+  //   }));
+  // }
 
+  getUserByEmail(email: string): Observable<any> {
+    return this.getUsers().pipe(
+      map((data: any) => {
+        console.log('Data fetched:', data); 
+        if (data && Array.isArray(data.users)) {
+          const foundUser = data.users.find((user: any) => user.email === email);
+          console.log('Found user:', foundUser); 
+          return foundUser; 
+        } else {
+          console.error('Users data is not an array or is undefined');
+          return undefined;
+        }
+      })
+    );
+  }
+  
 
   // setData(data: any): Observable<any> {
   //   return this.http.post<any>(this.apiUrl, data, this.httpOptions);
